@@ -1,0 +1,13 @@
+jobs:
+	build:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Compilar
+              run: echo "Buildando o projeto"
+              
+    deploy:
+        needs: build   # ← Isso define dependência (como um stage depende de outro)
+        runs-on: ubuntu-latest
+        steps:
+            - name: Deploy
+              run: echo "Fazendo deploy"
