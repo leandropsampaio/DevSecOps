@@ -47,16 +47,16 @@ jobs:
 
       - name: Build da imagem Docker
         run: |
-          docker build -t ghcr.io/${{ github.repository_owner }}/myapp:${{ steps.tag.outputs.image_tag }} .
+          docker build -t ghcr.io/${{ github.repository_owner }}/myapp:${{ steps.tag.outputs.tag_name }} .
 
       - name: Push da imagem para o GHCR
         run: |
-          docker push ghcr.io/${{ github.repository_owner }}/myapp:${{ steps.tag.outputs.image_tag }}
+          docker push ghcr.io/${{ github.repository_owner }}/myapp:${{ steps.tag.outputs.tag_name }}
 
       - name: Criar release (opcional)
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ steps.tag.outputs.image_tag }}
-          name: Docker Image - ${{ steps.tag.outputs.image_tag }}
+          tag_name: ${{ steps.tag.outputs.tag_name }}
+          name: Docker Image - ${{ steps.tag.outputs.tag_name }}
           body: Imagem Docker gerada e publicada no GHCR.
           token: ${{ secrets.GITHUB_TOKEN }}
