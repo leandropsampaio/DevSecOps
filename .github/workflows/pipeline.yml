@@ -12,7 +12,6 @@ on:
         default: development
         type: choice
         options:
-          - development
           - staging
           - sandbox
           - production
@@ -97,6 +96,26 @@ jobs:
       - name: Deploy
         run: |
           echo "Deploy para STAGING"
+          cat ${{ inputs.version }}/app.txt
+
+  deploy-sandbox:
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.target_environment == 'sandbox' }}
+    runs-on: ubuntu-latest
+    name: Deploy - Sandbox
+    environment: sandbox
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Baixar artefato
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.version }}
+
+      - name: Deploy
+        run: |
+          echo "Deploy para SANDBOX"
           cat ${{ inputs.version }}/app.txt
 
   deploy-production:
