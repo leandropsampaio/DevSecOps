@@ -21,14 +21,14 @@ jobs:
       - name: Criar Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ github.sha }}
-          name: Build ${{ github.sha }}
-          body: Build automático para commit ${{ github.sha }}
+          tag_name: app-${{ github.ref_name }}-${{ github.sha::10 }}-${{ github.run_number }}-try${{ github.run_attempt }}
+          name: Build app-${{ github.ref_name }}-${{ github.sha::10 }}-${{ github.run_number }}-try${{ github.run_attempt }}
+          body: Build automático para commit app-${{ github.ref_name }}-${{ github.sha::10 }}-${{ github.run_number }}-try${{ github.run_attempt }}
           draft: false
           prerelease: true
 
       - name: Upload artefato para Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ github.sha }}
+          tag_name: app-${{ github.ref_name }}-${{ github.sha::10 }}-${{ github.run_number }}-try${{ github.run_attempt }}
           files: build/app.txt
