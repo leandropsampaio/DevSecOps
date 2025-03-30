@@ -1,7 +1,7 @@
 name: Pipeline CI/CD
 
 on:
-  # workflow_dispatch:;;;;
+  # workflow_dispatch:
   #   inputs:
   #     version:
   #       description: 'Artifact name (app-<branch>-<commit_sha>-<run_number>-try<run_attempt>) (ex: app-develop-81ab3a56817fg17q14752bca-1-try2)'
@@ -69,7 +69,7 @@ jobs:
 
   deploy-development:
     # if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/develop' }}
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, devsecops]       # Seleciona os Self-Hosted Runners através de suas labels (pode ser também runners hospedados pelo github: ubuntu-latest, windows-latest, macos-latest)
     needs: build
     name: Deploy - Development
     environment: development
@@ -80,7 +80,7 @@ jobs:
 
   deploy-staging:
     # if: ${{ github.event_name == 'workflow_dispatch' && inputs.target_environment == 'staging' }}
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, devsecops]       # Seleciona os Self-Hosted Runners através de suas labels (pode ser também runners hospedados pelo github: ubuntu-latest, windows-latest, macos-latest)
     needs: deploy-development
     name: Deploy - Staging
     environment: staging
@@ -96,13 +96,12 @@ jobs:
           
       - name: Deploy
         run: |
-          pwd
           echo "Deploy para STAGING"
           cat app.txt
 
   deploy-sandbox:
     # if: ${{ github.event_name == 'workflow_dispatch' && inputs.target_environment == 'sandbox' }}
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, devsecops]       # Seleciona os Self-Hosted Runners através de suas labels (pode ser também runners hospedados pelo github: ubuntu-latest, windows-latest, macos-latest)
     needs: deploy-staging
     name: Deploy - Sandbox
     environment: sandbox
@@ -119,7 +118,7 @@ jobs:
       - name: Deploy
         run: |
           echo "Deploy para SANDBOX"
-          cat app-${{ github.ref_name }}-${{ github.sha }}-${{ github.run_number }}-try${{ github.run_attempt }}/app.txt
+          cat app.txt
 
   deploy-production:
     # if: ${{ github.event_name == 'workflow_dispatch' && inputs.target_environment == 'production' }}
@@ -140,4 +139,4 @@ jobs:
       - name: Deploy
         run: |
           echo "Deploy para PRODUÇÃO"
-          cat app-${{ github.ref_name }}-${{ github.sha }}-${{ github.run_number }}-try${{ github.run_attempt }}/app.txt
+          cat app.txt
