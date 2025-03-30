@@ -18,9 +18,10 @@ jobs:
           mkdir build
           echo "Build gerado em ${{ github.sha }}" > build/app.txt
 
-      - name: Gerar nome de tag com SHA curto
+      - name: Gerar nome da tag única
         id: tag
-        run: echo "tag_name=release-${GITHUB_REF##*/}-${GITHUB_RUN_NUMBER}-try${GITHUB_RUN_ATTEMPT}" >> $GITHUB_OUTPUT
+        run: |
+          echo "tag_name=release-${GITHUB_REF##*/}-$(echo $GITHUB_SHA | cut -c1-8)-${GITHUB_RUN_NUMBER}-try${GITHUB_RUN_ATTEMPT}" >> $GITHUB_OUTPUT
 
       - name: Criar Release
         uses: softprops/action-gh-release@v1
@@ -31,11 +32,12 @@ jobs:
           draft: false
           prerelease: true
           token: ${{ secrets.GITHUB_TOKEN }}
-
+      
       - name: Upload artefato para Release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ steps.tag.outputs.tag_name }}
           files: build/app.txt
           token: ${{ secrets.GITHUB_TOKEN }}
+
 
