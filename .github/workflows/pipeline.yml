@@ -96,6 +96,7 @@ jobs:
           
       - name: Deploy
         run: |
+          pwd
           echo "Deploy para STAGING"
           cat app-${{ github.ref_name }}-${{ github.sha }}-${{ github.run_number }}-try${{ github.run_attempt }}/app.txt
 
