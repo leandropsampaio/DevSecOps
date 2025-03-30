@@ -1,7 +1,7 @@
 name: Pipeline CI/CD
 
 on:
-  # workflow_dispatch:
+  # workflow_dispatch:;;;;
   #   inputs:
   #     version:
   #       description: 'Artifact name (app-<branch>-<commit_sha>-<run_number>-try<run_attempt>) (ex: app-develop-81ab3a56817fg17q14752bca-1-try2)'
