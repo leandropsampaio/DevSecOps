@@ -1,0 +1,10 @@
+name: "Print Environment"
+description: "Simple action to print env"
+inputs:
+  env_name:
+    description: "Name of the environment"
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - run: echo "Hello from ${{ inputs.env_name }}!"
