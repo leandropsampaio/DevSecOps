@@ -1,0 +1,33 @@
+name: CI - Build App
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Build App
+        run: |
+          mkdir build
+          echo "Build gerado em ${{ github.sha }}" > build/app.txt
+
+      - name: Criar Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.sha }}
+          name: Build ${{ github.sha }}
+          body: Build automático para commit ${{ github.sha }}
+          draft: false
+          prerelease: true
+
+      - name: Upload artefato para Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.sha }}
+          files: build/app.txt
