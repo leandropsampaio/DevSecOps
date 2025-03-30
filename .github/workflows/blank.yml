@@ -35,6 +35,11 @@ jobs:
           
       - name: Show selected environment
         run: echo "Selected environment is ${{ inputs.target_environment }} and ${{ secrets.DB_PASSWORD }}"
+
+      - name: Local custom action
+        uses: ./.github/actions/print_environment  # Caminho relativo para a action
+        with:
+          env_name: ${{ inputs.target_environment }}  # Passa argumentos para a action
         
   build:
     needs: print                            # Esse Job apenas será executado se o anterior executar com sucesso
