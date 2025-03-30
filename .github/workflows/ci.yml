@@ -3,7 +3,7 @@ name: Pipeline CI
 on:
   push:
     branches:
-      - main # REMOVER
+      - main # REMOVERd
       - develop
 
 jobs:
