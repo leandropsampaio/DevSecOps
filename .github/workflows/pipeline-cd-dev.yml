@@ -1,4 +1,4 @@
-name: Deploy - Development
+name: Pipeline CD - Deploy Development
 
 on:
   workflow_run:
