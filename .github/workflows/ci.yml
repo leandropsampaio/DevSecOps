@@ -18,11 +18,10 @@ jobs:
           mkdir build
           echo "Build gerado em ${{ github.sha }}" > build/app.txt
 
-      - name: Definir tag da imagem
+      - name: Gerar nome da tag única
         id: tag
         run: |
-          IMAGE_TAG=release-${GITHUB_REF##*/}-$(echo $GITHUB_SHA | cut -c1-10)-${GITHUB_RUN_NUMBER}-try${GITHUB_RUN_ATTEMPT}
-          echo "image_tag=$IMAGE_TAG" >> $GITHUB_OUTPUT
+          echo "tag_name=release-${GITHUB_REF##*/}-$(echo $GITHUB_SHA | cut -c1-10)-${GITHUB_RUN_NUMBER}-try${GITHUB_RUN_ATTEMPT}" >> $GITHUB_OUTPUT
 
       # -------------------------------------------------------------------------------------------------------------------------------------------------------------------
       - name: Criar Release
