@@ -1,6 +1,18 @@
 name: Pipeline CI/CD
 
 on:
+  workflow_dispatch:
+    inputs:
+      target_environment:
+        description: 'Choose environment'
+        required: true
+        default: development
+        type: choice
+        options:
+          - development
+          - staging
+          - sandbox
+          - production
   schedule:
     - cron: '10 00 * * *'  # Executa todos os dias às 8h da manhã (UTC)
   push:
@@ -19,7 +31,10 @@ jobs:
           MY_VARIABLE_STEP: "Hello World!"
         run: |
           echo "Variable is ${{ vars.MY_VARIABLE }} and secret is ${{ secrets.MY_SECRET }} and env variable is $MY_VARIABLE_ENV and step variable is $MY_VARIABLE_STEP"
-    
+                
+      - name: Show selected environment
+        run: echo "Selected environment is ${{ inputs.target_environment }} "
+        
   build:
     needs: print                            # Esse Job apenas será executado se o anterior executar com sucesso
     runs-on: [self-hosted, devsecops]       # Seleciona os Self-Hosted Runners através de suas labels (pode ser também runners hospedados pelo github: ubuntu-latest, windows-latest, macos-latest)
