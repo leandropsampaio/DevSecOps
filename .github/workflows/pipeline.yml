@@ -1,20 +1,20 @@
 name: Pipeline CI/CD
 
 on:
-  # workflow_dispatch:
-  #   inputs:
-  #     version:
-  #       description: 'Artifact name (app-<branch>-<commit_sha>-<run_number>-try<run_attempt>) (ex: app-develop-81ab3a56817fg17q14752bca-1-try2)'
-  #       required: true
-  #     target_environment:
-  #       description: 'Choose environment'
-  #       required: true
-  #       default: development
-  #       type: choice
-  #       options:
-  #         - staging
-  #         - sandbox
-  #         - production
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Artifact name (app-<branch>-<commit_sha>-<run_number>-try<run_attempt>) (ex: app-develop-81ab3a56817fg17q14752bca-1-try2)'
+        required: true
+      target_environment:
+        description: 'Choose environment'
+        required: true
+        default: development
+        type: choice
+        options:
+          - staging
+          - sandbox
+          - production
   schedule:
     - cron: '00 08 * * *'  # Executa todos os dias às 8h da manhã (UTC)
   push:
@@ -47,7 +47,7 @@ jobs:
           env_name: ${{ inputs.target_environment }}  # Passa os argumentos para a action
           
   build:
-    # if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/develop' }}
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/develop' }}
     runs-on: [self-hosted, devsecops]       # Seleciona os Self-Hosted Runners através de suas labels (pode ser também runners hospedados pelo github: ubuntu-latest, windows-latest, macos-latest)
     needs: print
     name: Build
@@ -79,7 +79,7 @@ jobs:
         run: echo "Deploy automático para o ambiente DEV"
 
   deploy-staging:
-    # if: ${{ github.event_name == 'workflow_dispatch' && inputs.target_environment == 'staging' }}
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.target_environment == 'staging' }}
     runs-on: [self-hosted, devsecops]       # Seleciona os Self-Hosted Runners através de suas labels (pode ser também runners hospedados pelo github: ubuntu-latest, windows-latest, macos-latest)
     needs: deploy-development
     name: Deploy - Staging
@@ -100,7 +100,7 @@ jobs:
           cat app.txt
 
   deploy-sandbox:
-    # if: ${{ github.event_name == 'workflow_dispatch' && inputs.target_environment == 'sandbox' }}
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.target_environment == 'sandbox' }}
     runs-on: [self-hosted, devsecops]       # Seleciona os Self-Hosted Runners através de suas labels (pode ser também runners hospedados pelo github: ubuntu-latest, windows-latest, macos-latest)
     needs: deploy-staging
     name: Deploy - Sandbox
@@ -121,7 +121,7 @@ jobs:
           cat app.txt
 
   deploy-production:
-    # if: ${{ github.event_name == 'workflow_dispatch' && inputs.target_environment == 'production' }}
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.target_environment == 'production' }}
     runs-on: [self-hosted, devsecops]       # Seleciona os Self-Hosted Runners através de suas labels (pode ser também runners hospedados pelo github: ubuntu-latest, windows-latest, macos-latest)
     needs: deploy-sandbox
     name: Deploy - Production
