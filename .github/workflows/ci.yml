@@ -21,7 +21,7 @@ jobs:
       - name: Gerar nome da tag única
         id: tag
         run: |
-          echo "tag_name=release-${GITHUB_REF##*/}-$(echo $GITHUB_SHA | cut -c1-8)-${GITHUB_RUN_NUMBER}-try${GITHUB_RUN_ATTEMPT}" >> $GITHUB_OUTPUT
+          echo "tag_name=release-${GITHUB_REF##*/}-$(echo $GITHUB_SHA | cut -c1-10)-${GITHUB_RUN_NUMBER}-try${GITHUB_RUN_ATTEMPT}" >> $GITHUB_OUTPUT
 
       - name: Criar Release
         uses: softprops/action-gh-release@v1
