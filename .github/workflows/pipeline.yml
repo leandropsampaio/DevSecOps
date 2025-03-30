@@ -122,7 +122,7 @@ jobs:
 
   deploy-production:
     # if: ${{ github.event_name == 'workflow_dispatch' && inputs.target_environment == 'production' }}
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, devsecops]       # Seleciona os Self-Hosted Runners através de suas labels (pode ser também runners hospedados pelo github: ubuntu-latest, windows-latest, macos-latest)
     needs: deploy-sandbox
     name: Deploy - Production
     environment: production
