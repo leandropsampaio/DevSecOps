@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Artifact name (app-<branch>-<commit:sha>) (ex: app-develop-81ab3a56817fg17q14752bca)'
+        description: 'Artifact name (app-<branch>-<commit_sha>-<run_number>) (ex: app-develop-81ab3a56817fg17q14752bca-1)'
         required: true
       target_environment:
         description: 'Choose environment'
@@ -64,7 +64,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: app-${{ github.ref_name }}-${{ github.sha }}
+          name: app-${{ github.ref_name }}-${{ github.sha }}-${{ github.run_number }}
           path: build/app.txt
 
   deploy-development:
