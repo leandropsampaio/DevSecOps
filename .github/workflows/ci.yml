@@ -18,17 +18,24 @@ jobs:
           mkdir build
           echo "Build gerado em ${{ github.sha }}" > build/app.txt
 
+      - name: Gerar nome de tag com SHA curto
+        id: tag
+        run: echo "tag_name=release-${GITHUB_REF##*/}-${GITHUB_RUN_NUMBER}-try${GITHUB_RUN_ATTEMPT}" >> $GITHUB_OUTPUT
+
       - name: Criar Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: app-${{ github.ref_name }}-${{ github.sha::10 }}-${{ github.run_number }}-try${{ github.run_attempt }}
-          name: Build app-${{ github.ref_name }}-${{ github.sha::10 }}-${{ github.run_number }}-try${{ github.run_attempt }}
-          body: Build automático para commit app-${{ github.ref_name }}-${{ github.sha::10 }}-${{ github.run_number }}-try${{ github.run_attempt }}
+          tag_name: ${{ steps.tag.outputs.tag_name }}
+          name: Build ${{ github.sha }}
+          body: Build automático para commit ${{ github.sha }}
           draft: false
           prerelease: true
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload artefato para Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: app-${{ github.ref_name }}-${{ github.sha::10 }}-${{ github.run_number }}-try${{ github.run_attempt }}
+          tag_name: ${{ steps.tag.outputs.tag_name }}
           files: build/app.txt
+          token: ${{ secrets.GITHUB_TOKEN }}
+
