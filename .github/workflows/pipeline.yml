@@ -89,15 +89,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Baixar artefato
+      - name: Download artifact
         uses: actions/download-artifact@v4
         with:
-          name: ${{ inputs.version }}
-
+          name: app-${{ github.ref_name }}-${{ github.sha }}-${{ github.run_number }}-try${{ github.run_attempt }}
+          
       - name: Deploy
         run: |
           echo "Deploy para STAGING"
-          cat ${{ inputs.version }}/app.txt
+          cat app-${{ github.ref_name }}-${{ github.sha }}-${{ github.run_number }}-try${{ github.run_attempt }}/app.txt
 
   deploy-sandbox:
     # if: ${{ github.event_name == 'workflow_dispatch' && inputs.target_environment == 'sandbox' }}
@@ -110,15 +110,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Baixar artefato
+      - name: Download artifact
         uses: actions/download-artifact@v4
         with:
-          name: ${{ inputs.version }}
+          name: app-${{ github.ref_name }}-${{ github.sha }}-${{ github.run_number }}-try${{ github.run_attempt }}
 
       - name: Deploy
         run: |
           echo "Deploy para SANDBOX"
-          cat ${{ inputs.version }}/app.txt
+          cat app-${{ github.ref_name }}-${{ github.sha }}-${{ github.run_number }}-try${{ github.run_attempt }}/app.txt
 
   deploy-production:
     # if: ${{ github.event_name == 'workflow_dispatch' && inputs.target_environment == 'production' }}
@@ -131,13 +131,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Baixar artefato
+      - name: Download artifact
         uses: actions/download-artifact@v4
         with:
-          name: ${{ inputs.version }}
-
+          name: app-${{ github.ref_name }}-${{ github.sha }}-${{ github.run_number }}-try${{ github.run_attempt }}
+          
       - name: Deploy
         run: |
           echo "Deploy para PRODUÇÃO"
-          cat ${{ inputs.version }}/app.txt
-          
+          cat app-${{ github.ref_name }}-${{ github.sha }}-${{ github.run_number }}-try${{ github.run_attempt }}/app.txt
