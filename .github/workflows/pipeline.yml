@@ -23,7 +23,7 @@ on:
       - develop
 
 env:
-  MY_VARIABLE_ENV: "Hello World!"
+  MY_VARIABLE_ENV: "Hello World!!!!"
 
 jobs:
   print:
