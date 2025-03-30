@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Artifact name (app-<branch>-<commit_sha>-<run_number>) (ex: app-develop-81ab3a56817fg17q14752bca-1)'
+        description: 'Artifact name (app-<branch>-<commit_sha>-<run_number>-try<run_attempt>) (ex: app-develop-81ab3a56817fg17q14752bca-1-try2)'
         required: true
       target_environment:
         description: 'Choose environment'
@@ -50,6 +50,7 @@ jobs:
   build:
     if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/develop' }}
     runs-on: [self-hosted, devsecops]       # Seleciona os Self-Hosted Runners através de suas labels (pode ser também runners hospedados pelo github: ubuntu-latest, windows-latest, macos-latest)
+    needs: print
     name: Build
 
     steps:
@@ -64,7 +65,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: app-${{ github.ref_name }}-${{ github.sha }}-${{ github.run_number }}
+          name: app-${{ github.ref_name }}-${{ github.sha }}-${{ github.run_number }}-try${{ github.run_attempt }}
           path: build/app.txt
 
   deploy-development:
