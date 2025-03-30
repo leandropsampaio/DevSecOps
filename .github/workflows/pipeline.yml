@@ -50,6 +50,7 @@ jobs:
   build:
     if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/develop' }}
     runs-on: [self-hosted, devsecops]       # Seleciona os Self-Hosted Runners através de suas labels (pode ser também runners hospedados pelo github: ubuntu-latest, windows-latest, macos-latest)
+    needs: print
     name: Build
 
     steps:
