@@ -7,14 +7,14 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, devsecops]       # Seleciona os runners através de suas labels
     steps:
       - name: Compilar
         run: echo "Buildando o projeto"
 
   deploy:
-    needs: build  # ← Isso define dependência (como um stage depende de outro)
-    runs-on: ubuntu-latest
+    needs: build                            # Esse Job apenas será executado se o anterior executar com sucesso
+    runs-on: [self-hosted, devsecops]       # seleciona os runners através de suas labels
     steps:
       - name: Deploy
         run: echo "Fazendo deploy"
