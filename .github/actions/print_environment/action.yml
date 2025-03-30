@@ -8,3 +8,4 @@ runs:
   using: "composite"
   steps:
     - run: echo "Hello from ${{ inputs.env_name }}!"
+      shell: bash
