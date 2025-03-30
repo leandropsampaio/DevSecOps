@@ -13,7 +13,7 @@ on:
   #       type: choice
   #       options:
   #         - staging
-  #         - sandbox
+  #         - sandboxjjj
   #         - production
   schedule:
     - cron: '00 08 * * *'  # Executa todos os dias às 8h da manhã (UTC)
