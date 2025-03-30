@@ -4,7 +4,9 @@ on:
   push:
     branches:
       - main
-
+  schedule:
+    - cron: '40 02 * * *'  # Executa todos os dias às 8h da manhã (UTC)
+    
 jobs:
   build:
     runs-on: [self-hosted, devsecops]       # Seleciona os runners através de suas labels
