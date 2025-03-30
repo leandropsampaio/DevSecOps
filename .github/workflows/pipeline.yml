@@ -27,6 +27,9 @@ jobs:
     runs-on: [self-hosted, devsecops]       # Seleciona os Self-Hosted Runners através de suas labels (pode ser também runners hospedados pelo github: ubuntu-latest, windows-latest, macos-latest)
     environment: ${{ inputs.target_environment }}
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        
       - name: Print variable and secret
         env:
           MY_VARIABLE_STEP: "Hello World!"
