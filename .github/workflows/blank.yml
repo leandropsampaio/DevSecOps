@@ -16,6 +16,7 @@ jobs:
           echo "Variable is ${{ vars.MY_VARIABLE }} and secret is ${{ secrets.MY_SECRET }}"
     
   build:
+    needs: print                            # Esse Job apenas será executado se o anterior executar com sucesso
     runs-on: [self-hosted, devsecops]       # Seleciona os Self-Hosted Runners através de suas labels (pode ser também runners hospedados pelo github: ubuntu-latest, windows-latest, macos-latest)
     steps:
       - name: Compilar
