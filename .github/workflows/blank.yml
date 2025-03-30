@@ -12,7 +12,7 @@ jobs:
     runs-on: [self-hosted, devsecops]       # Seleciona os Self-Hosted Runners através de suas labels (pode ser também runners hospedados pelo github: ubuntu-latest, windows-latest, macos-latest)
     steps:
       - name: Print variable and secret
-        run: echo "Variable is ${{ vars.MY_VARIABLE }} and secret is ${{ secrets.MY_SECRET }} ""
+        run: echo "Variable is ${{ vars.MY_VARIABLE }} and secret is ${{ secrets.MY_SECRET }} "
     
   build:
     runs-on: [self-hosted, devsecops]       # Seleciona os Self-Hosted Runners através de suas labels (pode ser também runners hospedados pelo github: ubuntu-latest, windows-latest, macos-latest)
