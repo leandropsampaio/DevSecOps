@@ -76,6 +76,13 @@ jobs:
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
 
+      # Docker Scan complementar (CLI da Docker)
+      - name: Docker Scan (docker scan CLI)
+        run: |
+          echo "Verificando vulnerabilidades com docker scan..."
+          docker scan ghcr.io/${{ github.repository_owner }}/${{ env.DOCKER_IMAGE_NAME }}:${{ steps.tag.outputs.tag_name }} || true
+
+
 
 
       - name: Push da imagem para o GHCR
