@@ -25,7 +25,10 @@ jobs:
       
       - name: Mostrar arquivos
         run: ls -la
-
+        
+      # 📦 Instala dependências do projeto (ex: Node.js)
+      - name: Install dependencies
+        run: npm install
 
       # (SAST) Scan do sistema de arquivos (fs) para Dockerfile, IaC, etc.
       - name: Run Trivy config scan (fs mode)
