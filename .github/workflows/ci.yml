@@ -15,16 +15,25 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Build App
-        run: |
-          mkdir build
-          echo "Build gerado em ${{ github.sha }}" > build/app.txt
-
       - name: Gerar nome da tag única
         id: tag
         run: |
           echo "tag_name=release-${GITHUB_REF##*/}-$(echo $GITHUB_SHA | cut -c1-10)-${GITHUB_RUN_NUMBER}-try${GITHUB_RUN_ATTEMPT}" >> $GITHUB_OUTPUT
 
+      - name: Salvar tag em arquivo
+        run: echo "${{ steps.tag.outputs.tag_name }}" > tag.txt
+      
+      - name: Upload do artefato com a tag
+        uses: actions/upload-artifact@v4
+        with:
+          name: image-tag
+          path: tag.txt
+          
+      # - name: Build App
+      #   run: |
+      #     mkdir build
+      #     echo "Build gerado em ${{ github.sha }}" > build/app.txt
+          
       # - name: Upload local artifact (opcional)
       #   uses: actions/upload-artifact@v4
       #   with:
