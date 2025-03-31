@@ -1,7 +1,3 @@
-skip-dirs:
-  - node_modules
-  - .git
-severity:
-  - CRITICAL
-  - HIGH
-ignore-unfixed: true
+format: json
+exit-code: 1
+severity: CRITICAL
