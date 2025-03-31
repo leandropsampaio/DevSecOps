@@ -4,6 +4,9 @@ FROM node:20-alpine
 # Define diretório de trabalho dentro do container
 WORKDIR /app
 
+# Atualiza o npm para a versão mais recente
+RUN npm install -g npm@latest
+
 # Copia os arquivos do projeto para dentro da imagem
 COPY package*.json ./
 COPY index.js ./
