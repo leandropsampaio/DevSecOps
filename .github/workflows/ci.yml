@@ -25,7 +25,7 @@ jobs:
       
 
 
-      # 📁 Scan do sistema de arquivos (fs) para Dockerfile, IaC, etc.
+      # (SAST) Scan do sistema de arquivos (fs) para Dockerfile, IaC, etc.
       - name: Run Trivy config scan (fs mode)
         uses: aquasecurity/trivy-action@0.28.0
         with:
@@ -65,7 +65,7 @@ jobs:
 
 
           
-      # 📦 Scan da imagem Docker (vulnerabilidades em pacotes e libs)
+      # 📦 (SCA) Scan da imagem Docker (vulnerabilidades em pacotes e libs)
       - name: Run Trivy image scan
         uses: aquasecurity/trivy-action@0.28.0
         with:
