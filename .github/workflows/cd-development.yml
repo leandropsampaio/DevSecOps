@@ -5,26 +5,30 @@ on:
     workflows: ["Pipeline CI"]  # Nome do workflow do CI (deve bater exatamente)
     types:
       - completed
-      
+env:
+  DOCKER_IMAGE_NAME: devsecops
+  
 jobs:
   deploy:
     runs-on: [self-hosted, devsecops]
     environment: development
     steps:
-      - name: Baixar artefato com a tag da imagem
-        uses: actions/download-artifact@v4
-        with:
-          name: image-tag
+      - name: Instalar GitHub CLI
+        run: sudo apt-get install -y gh
 
-      - name: Ler a tag da imagem
-        id: read_tag
+      - name: Autenticar no GitHub CLI
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
+
+      - name: Buscar a última Release do repositório
+        id: tag
         run: |
-          TAG=$(cat tag.txt)
-          echo "tag_name=$TAG" >> $GITHUB_OUTPUT
-
+          TAG=$(gh release list --limit 1 --repo ${{ github.repository }} --json tagName --jq '.[0].tagName')
+          echo "Última tag encontrada: $TAG"
+          echo "image_tag=$TAG" >> $GITHUB_OUTPUT
+          
       - name: Realizar Deploy
         run: |
-          echo "Realizando Deploy da imagem: ghcr.io/${{ github.repository_owner }}/${{ env.DOCKER_IMAGE_NAME }}:${{ steps.read_tag.outputs.tag_name }}"
+          echo "Realizando Deploy da imagem: ghcr.io/${{ github.repository_owner }}/${{ env.DOCKER_IMAGE_NAME }}:${{ steps.read_tag.outputs.image_tag }}"
     
       # - name: Login no Azure (AKS)
       #   uses: azure/login@v1
