@@ -5,7 +5,9 @@ on:
     branches:
       - main # REMOVERd
       - develop
-
+env:
+  DOCKER_IMAGE_NAME: devsecops
+  
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -23,37 +25,24 @@ jobs:
         run: |
           echo "tag_name=release-${GITHUB_REF##*/}-$(echo $GITHUB_SHA | cut -c1-10)-${GITHUB_RUN_NUMBER}-try${GITHUB_RUN_ATTEMPT}" >> $GITHUB_OUTPUT
 
-      # -------------------------------------------------------------------------------------------------------------------------------------------------------------------
-      - name: Criar Release
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: ${{ steps.tag.outputs.tag_name }}
-          name: Build ${{ github.sha }}
-          body: Build automático para commit ${{ github.sha }}
-          draft: false
-          prerelease: true
-          token: ${{ secrets.GITHUB_TOKEN }}
-      
-      - name: Upload artefato para Release
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: ${{ steps.tag.outputs.tag_name }}
-          files: build/app.txt
-          token: ${{ secrets.GITHUB_TOKEN }}
+      # - name: Upload local artifact (opcional)
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: ${{ steps.tag.outputs.tag_name }}
+      #     path: build
 
-      # -------------------------------------------------------------------------------------------------------------------------------------------------------------------
       - name: Login no GitHub Container Registry (GHCR)
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Build da imagem Docker
         run: |
-          docker build -t ghcr.io/${{ github.repository_owner }}/myapp:${{ steps.tag.outputs.tag_name }} .
+          docker build -t ghcr.io/${{ github.repository_owner }}/${{ env.DOCKER_IMAGE_NAME }}:${{ steps.tag.outputs.tag_name }} .
 
       - name: Push da imagem para o GHCR
         run: |
-          docker push ghcr.io/${{ github.repository_owner }}/myapp:${{ steps.tag.outputs.tag_name }}
+          docker push ghcr.io/${{ github.repository_owner }}/${{ env.DOCKER_IMAGE_NAME }}:${{ steps.tag.outputs.tag_name }}
 
-      - name: Criar release (opcional)
+      - name: Criar release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ steps.tag.outputs.tag_name }}
