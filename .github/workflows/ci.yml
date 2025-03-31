@@ -36,7 +36,6 @@ jobs:
         with:
           scan-type: 'fs'
           scan-ref: '.'
-          trivy-config: trivy.yaml
           
       # ------------------------------------------------------------------------------------------------
       # - name: Salvar tag em arquivo
