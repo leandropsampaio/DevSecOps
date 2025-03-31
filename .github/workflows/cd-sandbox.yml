@@ -1,0 +1,34 @@
+name: CD - Deploy Sandbox
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: 'Tag da imagem Docker publicada no GHCR'
+        required: true
+
+jobs:
+  deploy:
+    runs-on: [self-hosted, devsecops]
+    environment: sandbox
+    steps:
+      - name: Login no Azure (AKS)
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Obter contexto do AKS
+        uses: azure/aks-set-context@v3
+        with:
+          resource-group: ${{ secrets.AZURE_RESOURCE_GROUP }}
+          cluster-name: ${{ secrets.AZURE_CLUSTER_NAME }}
+
+      - name: Aplicar imagem no deployment
+        run: |
+          kubectl set image deployment/my-deployment \
+            my-container=ghcr.io/${{ github.repository_owner }}/myapp:${{ inputs.image_tag }} \
+            --namespace=sandbox
+
+      - name: Verificar rollout
+        run: |
+          kubectl rollout status deployment/my-deployment --namespace=sandbox
