@@ -12,5 +12,5 @@ scan:
   skip-dirs:
     - node_modules/ # Diretórios a serem ignorados durante a varredura
 
-  security-checks:
+  scanners:
     - vuln           # Tipos de verificações: 'vuln', 'config', 'secret'
