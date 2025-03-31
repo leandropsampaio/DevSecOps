@@ -11,8 +11,20 @@ jobs:
     runs-on: [self-hosted, devsecops]
     environment: development
     steps:
+      - name: Baixar artefato com a tag da imagem
+        uses: actions/download-artifact@v4
+        with:
+          name: image-tag
+
+      - name: Ler a tag da imagem
+        id: read_tag
+        run: |
+          TAG=$(cat tag.txt)
+          echo "tag_name=$TAG" >> $GITHUB_OUTPUT
+
       - name: Realizar Deploy
-        run: echo "Realizando Deploy..."
+        run: |
+          echo "Realizando Deploy da imagem: ghcr.io/${{ github.repository_owner }}/${{ env.DOCKER_IMAGE_NAME }}:${{ steps.read_tag.outputs.tag_name }}"
     
       # - name: Login no Azure (AKS)
       #   uses: azure/login@v1
