@@ -9,7 +9,7 @@ on:
 jobs:
   deploy:
     runs-on: [self-hosted, devsecops]
-    environment: staging
+    environment: development
     steps:
       - name: Login no Azure (AKS)
         uses: azure/login@v1
@@ -26,8 +26,8 @@ jobs:
         run: |
           kubectl set image deployment/my-deployment \
             my-container=ghcr.io/${{ github.repository_owner }}/myapp:${{ inputs.image_tag }} \
-            --namespace=staging
+            --namespace=development
 
       - name: Verificar rollout
         run: |
-          kubectl rollout status deployment/my-deployment --namespace=staging
+          kubectl rollout status deployment/my-deployment --namespace=development
