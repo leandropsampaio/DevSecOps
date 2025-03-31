@@ -2,7 +2,7 @@ name: CD - Deploy Development
 
 on:
   workflow_run:
-    workflows: ["Pipeline CI"]  # 👈 Nome do workflow do CI (deve bater exatamente)
+    workflows: ["Pipeline CI"]  # Nome do workflow do CI (deve bater exatamente)
     types:
       - completed
       
