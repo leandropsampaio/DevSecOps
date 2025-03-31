@@ -1,0 +1,7 @@
+skip-dirs:
+  - node_modules
+  - .git
+severity:
+  - CRITICAL
+  - HIGH
+ignore-unfixed: true
