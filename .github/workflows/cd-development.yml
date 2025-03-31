@@ -10,7 +10,7 @@ env:
   
 jobs:
   deploy:
-    runs-on: [self-hosted, devsecops]
+    runs-on: ubuntu-latest
     environment: development
     steps:
       - name: Instalar GitHub CLI
