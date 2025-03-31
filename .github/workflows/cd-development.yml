@@ -28,7 +28,7 @@ jobs:
           
       - name: Realizar Deploy
         run: |
-          echo "Realizando Deploy da imagem: ghcr.io/${{ github.repository_owner }}/${{ env.DOCKER_IMAGE_NAME }}:${{ steps.read_tag.outputs.image_tag }}"
+          echo "Realizando Deploy da imagem: ghcr.io/${{ github.repository_owner }}/${{ env.DOCKER_IMAGE_NAME }}:${{ steps.tag.outputs.image_tag }}"
     
       # - name: Login no Azure (AKS)
       #   uses: azure/login@v1
@@ -44,7 +44,7 @@ jobs:
       # - name: Aplicar imagem no deployment
       #   run: |
       #     kubectl set image deployment/my-deployment \
-      #       my-container=ghcr.io/${{ github.repository_owner }}/myapp:${{ inputs.image_tag }} \
+      #       my-container=ghcr.io/${{ github.repository_owner }}/${{ env.DOCKER_IMAGE_NAME }}:${{ inputs.image_tag }} \
       #       --namespace=development
 
       # - name: Verificar rollout
