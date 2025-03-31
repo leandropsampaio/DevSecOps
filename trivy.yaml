@@ -1,3 +1,16 @@
-format: json
-exit-code: 1
-severity: CRITICAL
+# Opções de Relatório
+format: table       # Formato de saída: 'table', 'json', etc.
+severity:
+  - UNKNOWN
+  - LOW
+  - MEDIUM
+  - HIGH
+  - CRITICAL        # Níveis de severidade a serem reportados
+
+# Opções de Varredura
+scan:
+  skip-dirs:
+    - node_modules/ # Diretórios a serem ignorados durante a varredura
+
+  security-checks:
+    - vuln           # Tipos de verificações: 'vuln', 'config', 'secret'
