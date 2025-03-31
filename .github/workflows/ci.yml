@@ -20,6 +20,21 @@ jobs:
         run: |
           echo "tag_name=release-${GITHUB_REF##*/}-$(echo $GITHUB_SHA | cut -c1-10)-${GITHUB_RUN_NUMBER}-try${GITHUB_RUN_ATTEMPT}" >> $GITHUB_OUTPUT
 
+      # ------------------------------------------------------------------------------------------------
+
+      
+
+
+      # 📁 Scan do sistema de arquivos (fs) para Dockerfile, IaC, etc.
+      - name: Run Trivy config scan (fs mode)
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          trivy-config: trivy.yaml
+
+          
+      # ------------------------------------------------------------------------------------------------
       # - name: Salvar tag em arquivo
       #   run: echo "${{ steps.tag.outputs.tag_name }}" > tag.txt
       
@@ -47,10 +62,26 @@ jobs:
         run: |
           docker build -t ghcr.io/${{ github.repository_owner }}/${{ env.DOCKER_IMAGE_NAME }}:${{ steps.tag.outputs.tag_name }} .
 
+
+
+          
+      # 📦 Scan da imagem Docker (vulnerabilidades em pacotes e libs)
+      - name: Run Trivy image scan
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: 'ghcr.io/${{ github.repository_owner }}/${{ env.DOCKER_IMAGE_NAME }}:${{ steps.tag.outputs.tag_name }}'
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
+
+
+
       - name: Push da imagem para o GHCR
         run: |
           docker push ghcr.io/${{ github.repository_owner }}/${{ env.DOCKER_IMAGE_NAME }}:${{ steps.tag.outputs.tag_name }}
-
+          
       - name: Criar release
         uses: softprops/action-gh-release@v1
         with:
