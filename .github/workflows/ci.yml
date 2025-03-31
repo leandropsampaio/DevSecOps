@@ -23,6 +23,8 @@ jobs:
       # ------------------------------------------------------------------------------------------------
 
       
+      - name: Mostrar arquivos
+        run: ls -la
 
 
       # (SAST) Scan do sistema de arquivos (fs) para Dockerfile, IaC, etc.
