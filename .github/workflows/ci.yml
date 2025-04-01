@@ -19,23 +19,64 @@ jobs:
         id: tag
         run: |
           echo "tag_name=release-${GITHUB_REF##*/}-$(echo $GITHUB_SHA | cut -c1-10)-${GITHUB_RUN_NUMBER}-try${GITHUB_RUN_ATTEMPT}" >> $GITHUB_OUTPUT
-
-      # ------------------------------------------------------------------------------------------------
-
       
       - name: Mostrar arquivos
         run: ls -la
         
-      # 📦 Instala dependências do projeto (ex: Node.js)
+      # 📦 Instalar dependências do projeto
       - name: Install dependencies
         run: npm install
+        
+      # ------------------------------------------------------------------------------------------------
+      # SAST
+      # ------------------------------------------------------------------------------------------------
+      - name: 📥 Adicionar repositório do Docker
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y apt-transport-https ca-certificates curl gnupg lsb-release
+          curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo tee /etc/apt/keyrings/docker.asc > /dev/null
+          echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu focal stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+          sudo apt-get update
 
-      # (SAST) Scan do sistema de arquivos (fs) para Dockerfile, IaC, etc.
-      - name: Run Trivy config scan (fs mode)
-        uses: aquasecurity/trivy-action@0.28.0
+      - name: 🔍 Listar versões disponíveis do Docker
+        run: apt-cache madison docker-ce
+
+      - name: 📦 Instalar Docker versão 22 manualmente
+        run: |
+          sudo apt-get install -y docker-ce=5:20.10.13~3-0~ubuntu-focal \
+                                  docker-ce-cli=5:20.10.13~3-0~ubuntu-focal \
+                                  containerd.io --allow-downgrades
+          sudo apt-mark hold docker-ce docker-ce-cli containerd.io
+
+      - name: 🏗️ Verificar versão final do Docker instalada
+        run: docker --version
+
+      - name: Horusec
+        run: |
+          mkdir reports
+          docker run \
+            -v /var/run/docker.sock:/var/run/docker.sock \
+            -v $(pwd):/src/horusec \
+            horuszup/horusec-cli:latest horusec start \
+            -p /src/horusec \
+            -P $(pwd) \
+            -o='sarif' \
+            -O=/src/horusec/reports/horusec_report.sarif \
+            --return-error \
+            --severities-to-ignore="LOW"
+            
+      - name: Archive horusec report
+        uses: actions/upload-artifact@v4
         with:
-          scan-type: 'fs'
-          scan-ref: '.'
+          name: horusec_report
+          path: reports/horusec_report.sarif
+
+      
+
+      # (KICS) VERIFICAR O DOCKERFILE
+
+
+
           
       # ------------------------------------------------------------------------------------------------
       # - name: Salvar tag em arquivo
@@ -68,7 +109,7 @@ jobs:
 
 
           
-      # 📦 (SCA) Scan da imagem Docker (vulnerabilidades em pacotes e libs)
+      # 📦 (SCA) Scan vulnerabilidades em pacotes e dependências da aplicação
       - name: Run Trivy image scan
         uses: aquasecurity/trivy-action@0.28.0
         with:
