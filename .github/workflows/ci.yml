@@ -66,15 +66,24 @@ jobs:
             -p /src/horusec \
             -P $(pwd) \
             -o='sarif' \
-            -O=/src/horusec/reports/horusec_report.sarif
-            
+            -O=/src/horusec/reports/horusec_report.sarif \
+            --return-error \
+            --information-severity \
+            --ignore-severity="LOW" \
+            --log-level="debug"
+      
       - name: Archive horusec report
         uses: actions/upload-artifact@v4
         with:
           name: horusec_report
           path: reports/horusec_report.sarif
 
-      
+      - name: Upload SARIF results to GitHub Security Tab
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: reports/horusec_report.sarif
+          category: "horusec"
+          checkout_path: ${{ github.workspace }}
 
       # (KICS) VERIFICAR O DOCKERFILE
 
