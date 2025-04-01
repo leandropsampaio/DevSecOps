@@ -100,16 +100,16 @@ jobs:
       #   env:
       #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: 🔍 Analisar SARIF e bloquear pipeline se houver vulnerabilidades
-        continue-on-error: true
-        run: |
-          VULNERABILITIES=$(jq '[.runs[].results | length] | add' reports/horusec_report.sarif || echo 0)
-          echo "Total vulnerabilities detected: $VULNERABILITIES"
+      # - name: 🔍 Analisar SARIF e bloquear pipeline se houver vulnerabilidades
+      #   continue-on-error: true
+      #   run: |
+      #     VULNERABILITIES=$(jq '[.runs[].results | length] | add' reports/horusec_report.sarif || echo 0)
+      #     echo "Total vulnerabilities detected: $VULNERABILITIES"
 
-          if [ "$VULNERABILITIES" -gt 0 ]; then
-            echo "❌ Security Gate: Vulnerabilities found! Blocking pipeline."
-            exit 1
-          fi
+      #     if [ "$VULNERABILITIES" -gt 0 ]; then
+      #       echo "❌ Security Gate: Vulnerabilities found! Blocking pipeline."
+      #       exit 1
+      #     fi
           
       - name: Upload SARIF results to GitHub Security Tab
         uses: github/codeql-action/upload-sarif@v3
@@ -142,6 +142,39 @@ jobs:
           sarif_file: semgrep-report.sarif
           category: semgrep
 
+      - name: 🔍 Analisar relatórios SARIF e bloquear pipeline se houver vulnerabilidades
+        run: |
+          # Inicializar contador de vulnerabilidades
+          TOTAL_VULNERABILIDADES=0
+    
+          # Verificar se o arquivo de relatório do Semgrep existe e contém vulnerabilidades
+          if [ -f reports/semgrep_report.sarif ]; then
+            VULNERABILIDADES_SEMGREP=$(jq '[.runs[].results | length] | add' reports/semgrep_report.sarif || echo 0)
+            echo "Vulnerabilidades detectadas pelo Semgrep: $VULNERABILIDADES_SEMGREP"
+            TOTAL_VULNERABILIDADES=$((TOTAL_VULNERABILIDADES + VULNERABILIDADES_SEMGREP))
+          else
+            echo "Relatório do Semgrep não encontrado."
+          fi
+    
+          # Verificar se o arquivo de relatório do Horusec existe e contém vulnerabilidades
+          if [ -f reports/horusec_report.sarif ]; then
+            VULNERABILIDADES_HORUSEC=$(jq '[.runs[].results | length] | add' reports/horusec_report.sarif || echo 0)
+            echo "Vulnerabilidades detectadas pelo Horusec: $VULNERABILIDADES_HORUSEC"
+            TOTAL_VULNERABILIDADES=$((TOTAL_VULNERABILIDADES + VULNERABILIDADES_HORUSEC))
+          else
+            echo "Relatório do Horusec não encontrado."
+          fi
+    
+          # Exibir o total de vulnerabilidades detectadas
+          echo "Total de vulnerabilidades detectadas: $TOTAL_VULNERABILIDADES"
+    
+          # Bloquear a pipeline se houver vulnerabilidades
+          if [ "$TOTAL_VULNERABILIDADES" -gt 0 ]; then
+            echo "❌ Security Gate: Vulnerabilidades encontradas! Bloqueando a pipeline."
+            exit 1
+          else
+            echo "✅ Nenhuma vulnerabilidade encontrada. Prosseguindo com a pipeline."
+          fi
 
           
       # ------------------------------------------------------------------------------------------------
