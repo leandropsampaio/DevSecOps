@@ -131,8 +131,7 @@ jobs:
             --config=p/owasp-top-ten \
             --config=p/secrets \
             --config=p/ci \
-            --config=p/semgrep \
-            -f sarif \
+            --format sarif \
             --output=semgrep-report.sarif \
             --error
 
