@@ -82,23 +82,23 @@ jobs:
           name: horusec_report
           path: reports/horusec_report.sarif
           
-      - name: Create GitHub Issue if Vulnerabilities Found
-        run: |
-          VULNERABILITIES=$(jq '[.runs[].results | length] | add' reports/horusec_report.sarif || echo 0)
-          echo "Total vulnerabilities detected: $VULNERABILITIES"
+      # - name: Create GitHub Issue if Vulnerabilities Found
+      #   run: |
+      #     VULNERABILITIES=$(jq '[.runs[].results | length] | add' reports/horusec_report.sarif || echo 0)
+      #     echo "Total vulnerabilities detected: $VULNERABILITIES"
           
-          if [ "$VULNERABILITIES" -gt 0 ]; then
-            gh issue create \
-              --title "🚨 Horusec Security Scan Found $VULNERABILITIES Issues" \
-              --body "O scanner de segurança detectou **$VULNERABILITIES** vulnerabilidades.\n\nVerifique o relatório completo: [Clique Aqui](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})" \
-              --label "security" \
-              --repo ${{ github.repository }}
-          fi
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #     if [ "$VULNERABILITIES" -gt 0 ]; then
+      #       gh issue create \
+      #         --title "🚨 Horusec Security Scan Found $VULNERABILITIES Issues" \
+      #         --body "O scanner de segurança detectou **$VULNERABILITIES** vulnerabilidades.\n\nVerifique o relatório completo: [Clique Aqui](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})" \
+      #         --label "security" \
+      #         --repo ${{ github.repository }}
+      #     fi
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 🔍 Analisar SARIF e bloquear pipeline se houver vulnerabilidades
-        continue-on-error: true
+        # continue-on-error: true
         run: |
           VULNERABILITIES=$(jq '[.runs[].results | length] | add' reports/horusec_report.sarif || echo 0)
           echo "Total vulnerabilities detected: $VULNERABILITIES"
