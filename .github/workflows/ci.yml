@@ -51,24 +51,22 @@ jobs:
       - name: 🏗️ Verificar versão final do Docker instalada
         run: docker --version
 
-      - name: Horusec
-        run: |
-          mkdir reports
-          docker run -v /var/run/docker.sock:/var/run/docker.sock -v $(pwd):/src/horusec horuszup/horusec-cli:latest horusec start -p /src/horusec -P $(pwd) -o='sarif' -O=/src/horusec/reports/horusec_report.sarif
-
       # - name: Horusec
       #   run: |
       #     mkdir reports
-      #     docker run \
-      #       -v /var/run/docker.sock:/var/run/docker.sock \
-      #       -v $(pwd):/src/horusec \
-      #       horuszup/horusec-cli:latest horusec start \
-      #       -p /src/horusec \
-      #       -P $(pwd) \
-      #       -o='sarif' \
-      #       -O=/src/horusec/reports/horusec_report.sarif \
-      #       --return-error \
-      #       --severities-to-ignore="LOW"
+      #     docker run -v /var/run/docker.sock:/var/run/docker.sock -v $(pwd):/src/horusec horuszup/horusec-cli:latest horusec start -p /src/horusec -P $(pwd) -o='sarif' -O=/src/horusec/reports/horusec_report.sarif
+
+      - name: Horusec
+        run: |
+          mkdir reports
+          docker run \
+            -v /var/run/docker.sock:/var/run/docker.sock \
+            -v $(pwd):/src/horusec \
+            horuszup/horusec-cli:latest horusec start \
+            -p /src/horusec \
+            -P $(pwd) \
+            -o='sarif' \
+            -O=/src/horusec/reports/horusec_report.sarif
             
       - name: Archive horusec report
         uses: actions/upload-artifact@v4
