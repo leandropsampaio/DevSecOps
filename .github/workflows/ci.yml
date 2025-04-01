@@ -121,17 +121,19 @@ jobs:
       # ---------------------------------------------
       # Semgrep
       # ---------------------------------------------
-      - name: Executar Semgrep e salvar JSON
+      - name: 📦 Instalar Semgrep
         run: |
           pip install semgrep
-          semgrep scan --config="p/owasp-top-ten" --json > semgrep-results.json || true
-
-
-      - name: Salvar resultado como artefato
-        uses: actions/upload-artifact@v4
+      
+      - name: 🛡️ Rodar Semgrep
+        run: |
+          semgrep scan --config=auto --output=semgrep-report.sarif --format=sarif
+      
+      - name: 📤 Upload Semgrep SARIF results
+        uses: github/codeql-action/upload-sarif@v3
         with:
-          name: semgrep-results
-          path: semgrep-results.json
+          sarif_file: semgrep-report.sarif
+          category: semgrep
 
 
           
