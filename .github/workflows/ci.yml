@@ -131,8 +131,9 @@ jobs:
             --config=p/owasp-top-ten \
             --config=p/secrets \
             --config=p/ci \
-            --format sarif \
-            --output=semgrep-report.sarif \
+            --config=p/default \
+            --sarif \
+            --sarif-output=semgrep-report.sarif \
             --error
 
       - name: 📤 Upload Semgrep SARIF results
