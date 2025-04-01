@@ -133,13 +133,13 @@ jobs:
             --config=p/ci \
             --config=p/default \
             --sarif \
-            --sarif-output=reports/semgrep-report.sarif
+            --sarif-output=reports/semgrep_report.sarif
             # --error
 
       - name: 📤 Upload Semgrep SARIF results
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: reports/semgrep-report.sarif
+          sarif_file: reports/semgrep_report.sarif
           category: semgrep
 
       - name: 🔍 Analisar relatórios SARIF e bloquear pipeline se houver vulnerabilidades
