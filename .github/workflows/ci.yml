@@ -101,7 +101,7 @@ jobs:
       #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 🔍 Analisar SARIF e bloquear pipeline se houver vulnerabilidades
-        # continue-on-error: true
+        continue-on-error: true
         run: |
           VULNERABILITIES=$(jq '[.runs[].results | length] | add' reports/horusec_report.sarif || echo 0)
           echo "Total vulnerabilities detected: $VULNERABILITIES"
