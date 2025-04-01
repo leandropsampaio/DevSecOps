@@ -127,7 +127,14 @@ jobs:
       
       - name: 🛡️ Rodar Semgrep
         run: |
-          semgrep scan --config=auto --output=semgrep-report.sarif --format=sarif
+          semgrep \
+            --config=p/owasp-top-ten \
+            --config=p/secrets \
+            --config=p/ci \
+            --config=p/semgrep \
+            --output=semgrep-report.sarif \
+            --format=sarif \
+            --error
       
       - name: 📤 Upload Semgrep SARIF results
         uses: github/codeql-action/upload-sarif@v3
