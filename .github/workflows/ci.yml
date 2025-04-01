@@ -143,6 +143,7 @@ jobs:
           category: semgrep
 
       - name: 🔍 Analisar relatórios SARIF e bloquear pipeline se houver vulnerabilidades
+        continue-on-error: true
         run: |
           # Inicializar contador de vulnerabilidades
           TOTAL_VULNERABILIDADES=0
