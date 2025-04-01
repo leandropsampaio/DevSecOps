@@ -136,11 +136,11 @@ jobs:
             --sarif-output=semgrep-report.sarif \
             --error
 
-      - name: 📤 Upload Semgrep SARIF results
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: semgrep-report.sarif
-          category: semgrep
+      # - name: 📤 Upload Semgrep SARIF results
+      #   uses: github/codeql-action/upload-sarif@v3
+      #   with:
+      #     sarif_file: semgrep-report.sarif
+      #     category: semgrep
 
 
           
