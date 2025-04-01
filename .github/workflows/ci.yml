@@ -6,10 +6,10 @@ on:
       - main # REMOVERd
       - develop
 
-permissions:
-  contents: read
-  security-events: write
-  issues: write
+# permissions:
+#   contents: read
+#   security-events: write
+#   issues: write
   
 env:
   DOCKER_IMAGE_NAME: devsecops
