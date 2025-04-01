@@ -76,9 +76,8 @@ jobs:
             --return-error \
             --information-severity \
             --ignore-severity="LOW" \
-            --log-level="debug" \
-            --output-format="text"
-      
+            --log-level="debug"
+            
       - name: Archive horusec report
         uses: actions/upload-artifact@v4
         with:
