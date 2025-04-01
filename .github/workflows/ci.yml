@@ -121,7 +121,7 @@ jobs:
       # ---------------------------------------------
       # Semgrep
       # ---------------------------------------------
-      - name: 📦 Instalar Semgrep
+      - name: 📦 Instalar Semgrep...
         run: |
           pip install semgrep
       
