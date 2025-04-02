@@ -157,7 +157,7 @@ jobs:
       - name: Rodar Trivy
         uses: aquasecurity/trivy-action@0.28.0
         with:
-          image-ref: 'ghcr.io/${{ github.repository_owner }}/${{DOCKER_IMAGE_NAME}}:${{ needs.init.outputs.tag_name }}'
+          image-ref: 'ghcr.io/${{ github.repository_owner }}/${{IMAGE_NAME}}:${{ needs.init.outputs.tag_name }}'
           format: 'table'
           exit-code: '1'
           ignore-unfixed: true
