@@ -148,12 +148,13 @@ jobs:
           path: '.'
           format: 'SARIF'
           out: 'reports'
+          # --failOnCVSS 7                                     # falha a pipeline se estiver vulnerabilidades acima do nível 7 (alto)
+          # --nvdApiKey ${{ secrets.DC_KEY }}                  # chave de api para atualizar o banco de dados de vulnerabilidades NVD (National Vulnerability Database)
+          # --enableNodeAudit                                  # ativar a busca dentro do node_modules
           args: >
-            --failOnCVSS 7                                      # falha a pipeline se estiver vulnerabilidades acima do nível 7 (alto)
-            # --nvdApiKey ${{ secrets.DC_KEY }}                 # chave de api para atualizar o banco de dados de vulnerabilidades NVD (National Vulnerability Database)
+            --failOnCVSS 7
             --enableExperimental
             --enableRetired
-            # --enableNodeAudit
 
       - name: Upload DC results (Artifact)
         uses: actions/upload-artifact@master
