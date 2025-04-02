@@ -230,7 +230,7 @@ jobs:
               path: '.'
               output_formats: 'sarif'
               # ignore_on_exit: results
-              fail_on: 'medium,high'
+              fail_on: high,medium
               output_path: reports/
           
         - name: Upload IAC results (Artifact)
