@@ -127,25 +127,12 @@ jobs:
           
   sca:
     runs-on: ubuntu-latest
-    needs: init
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Instalar dependências
-        run: npm install
-
-      - name: Rodar audit do NPM (ou Snyk, OWASP, etc.)
-        run: npm audit --audit-level=high
-  
-  dependency-check:
-    runs-on: ubuntu-latest
     steps:
       - name: Checkout do código
         uses: actions/checkout@v3
 
-      - name: Build do projeto com Maven
-        run: mvn clean install
+      - name: Instalar dependências
+        run: npm install
 
       - name: Executar Dependency-Check
         uses: dependency-check/Dependency-Check_Action@main
