@@ -42,15 +42,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         
-      - name: Instalar Docker
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y apt-transport-https ca-certificates curl gnupg lsb-release
-          curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo tee /etc/apt/keyrings/docker.asc > /dev/null
-          echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu focal stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-          sudo apt-get update
-          sudo apt-get install -y docker-ce=5:20.10.13~3-0~ubuntu-focal docker-ce-cli=5:20.10.13~3-0~ubuntu-focal containerd.io --allow-downgrades
-          sudo apt-mark hold docker-ce docker-ce-cli containerd.io
+      # - name: Instalar Docker
+      #   run: |
+      #     sudo apt-get update
+      #     sudo apt-get install -y apt-transport-https ca-certificates curl gnupg lsb-release
+      #     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo tee /etc/apt/keyrings/docker.asc > /dev/null
+      #     echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu focal stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+      #     sudo apt-get update
+      #     sudo apt-get install -y docker-ce=5:20.10.13~3-0~ubuntu-focal docker-ce-cli=5:20.10.13~3-0~ubuntu-focal containerd.io --allow-downgrades
+      #     sudo apt-mark hold docker-ce docker-ce-cli containerd.io
 
       - name: Horusec
         run: |
@@ -144,16 +144,21 @@ jobs:
       - name: Checkout do código
         uses: actions/checkout@v3
 
-      - name: Configurar ambiente
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y dependency-check
+      - name: Build do projeto com Maven
+        run: mvn clean install
 
       - name: Executar Dependency-Check
-        run: |
-          dependency-check --project "Meu Projeto" --scan . --format SARIF --out reports/dependency-check-report.sarif
+        uses: dependency-check/Dependency-Check_Action@main
+        with:
+          project: 'nome-do-projeto'
+          path: '.'
+          format: 'SARIF'
+          out: 'reports'
+          args: >
+            --failOnCVSS 7
+            --enableRetired
 
-      - name: Upload do relatório SARIF
+      - name: Fazer upload do relatório SARIF
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: reports/dependency-check-report.sarif
