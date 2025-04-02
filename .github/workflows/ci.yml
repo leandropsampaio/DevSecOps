@@ -84,6 +84,12 @@ jobs:
             --sarif \
             --sarif-output=reports/semgrep_report.sarif
 
+      - name: Upload DC results (Artifact)
+        uses: actions/upload-artifact@master
+        with:
+           name: SAST
+           path: ${{github.workspace}}/reports
+           
       - name: Upload SARIF Semgrep
         uses: github/codeql-action/upload-sarif@v3
         with:
@@ -159,7 +165,7 @@ jobs:
       - name: Upload DC results (Artifact)
         uses: actions/upload-artifact@master
         with:
-           name: DC report
+           name: SCA
            path: ${{github.workspace}}/reports
            
       - name: Fazer upload do relatório SARIF (Code scanning)
