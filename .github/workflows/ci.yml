@@ -155,7 +155,13 @@ jobs:
             --enableRetired
             --enableNodeAudit
 
-      - name: Fazer upload do relatório SARIF
+      - name: Upload DC results (Artifact)
+        uses: actions/upload-artifact@master
+        with:
+           name: DC report
+           path: ${{github.workspace}}/reports
+           
+      - name: Fazer upload do relatório SARIF (Code scanning)
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: reports/dependency-check-report.sarif
