@@ -260,7 +260,7 @@ jobs:
           with:
               path: '.'
               output_formats: 'sarif'
-              ignore_on_exit: results
+              # ignore_on_exit: results
               # fail_on: high,medium
               output_path: reports/
           
