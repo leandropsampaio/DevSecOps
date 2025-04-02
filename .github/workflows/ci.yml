@@ -87,7 +87,7 @@ jobs:
       - name: Upload DC results (Artifact)
         uses: actions/upload-artifact@master
         with:
-           name: SAST
+           name: SAST - Report
            path: ${{github.workspace}}/reports
            
       - name: Upload SARIF Semgrep
@@ -167,7 +167,7 @@ jobs:
       - name: Upload DC results (Artifact)
         uses: actions/upload-artifact@master
         with:
-           name: SCA
+           name: SCA - Report
            path: ${{github.workspace}}/reports
            
       - name: Fazer upload do relatório SARIF (Code scanning)
@@ -236,7 +236,7 @@ jobs:
         - name: Upload IAC results (Artifact)
           uses: actions/upload-artifact@master
           with:
-             name: IAC Report
+             name: IAC - Report
              path: ${{github.workspace}}/reports
              
         - name: Fazer upload do relatório SARIF (Code scanning)
