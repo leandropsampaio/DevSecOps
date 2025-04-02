@@ -127,7 +127,7 @@ jobs:
           
   sca:
     runs-on: ubuntu-latest
-    needs: build
+    needs: sast
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -140,7 +140,7 @@ jobs:
 
   container-scan:
     runs-on: ubuntu-latest
-    needs: [build, sast]
+    needs: sca
     env:
       DOCKER_IMAGE_NAME: my-image
     steps:
