@@ -76,8 +76,8 @@ jobs:
             -P $(pwd) \
             -o='sarif' \
             -O=/src/horusec/reports/horusec_report.sarif \
-            --information-severity \
-            --ignore-severity="LOW"
+            --information-severity
+            # --ignore-severity="LOW"
             
       - name: Archive horusec report
         uses: actions/upload-artifact@v4
