@@ -131,8 +131,9 @@ jobs:
       - name: Checkout do código
         uses: actions/checkout@v3
 
-      # - name: Instalar dependências
-      #   run: npm install
+      - name: Instalar dependências
+        working-directory: .
+        run: npm install
 
       - name: Executar Dependency-Check
         uses: dependency-check/Dependency-Check_Action@main
