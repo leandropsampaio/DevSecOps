@@ -60,7 +60,7 @@ jobs:
           projectBaseDir: .
           args: >
             -Dsonar.organization=leandropsampaio
-            -Dsonar.projectKey=DevSecOps
+            -Dsonar.projectKey=leandropsampaio_DevSecOps
             -Dsonar.sources=.
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
