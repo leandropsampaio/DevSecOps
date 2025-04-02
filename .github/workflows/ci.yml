@@ -148,12 +148,12 @@ jobs:
 
       - name: Build da imagem
         run: |
-          docker build -t ghcr.io/${{ github.repository_owner }}/"${{ env.DOCKER_IMAGE_NAME }}":"${{ needs.build.outputs.tag_name }}" .
+          docker build -t ghcr.io/${{ github.repository_owner }}/$DOCKER_IMAGE_NAME:${{ needs.build.outputs.tag_name }} .
 
       - name: Rodar Trivy
         uses: aquasecurity/trivy-action@0.28.0
         with:
-          image-ref: 'ghcr.io/${{ github.repository_owner }}/"${{ env.DOCKER_IMAGE_NAME }}":"${{ needs.build.outputs.tag_name }}"'
+          image-ref: 'ghcr.io/${{ github.repository_owner }}/$DOCKER_IMAGE_NAME:${{ needs.build.outputs.tag_name }}'
           format: 'table'
           exit-code: '1'
           ignore-unfixed: true
@@ -168,7 +168,7 @@ jobs:
 
       - name: Push da imagem para o GHCR
         run: |
-          docker push ghcr.io/${{ github.repository_owner }}/"${{ env.DOCKER_IMAGE_NAME }}":"${{ steps.tag.outputs.tag_name }}"
+          docker push ghcr.io/${{ github.repository_owner }}/$DOCKER_IMAGE_NAME:${{ needs.build.outputs.tag_name }}
           
       - name: Criar release
         uses: softprops/action-gh-release@v1
