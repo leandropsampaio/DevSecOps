@@ -162,6 +162,8 @@ jobs:
             --enableExperimental
             --enableRetired
 
+      # (SCA) Add Snyk
+
       - name: Upload DC results (Artifact)
         uses: actions/upload-artifact@master
         with:
@@ -203,12 +205,6 @@ jobs:
           vuln-type: 'os,library'
           severity: 'MEDIUM,CRITICAL,HIGH'
           
-      # (SCA) Snyk
-
-      # (SCA) OWASP Dependency-Check
-
-
-
       - name: Push da imagem para o GHCR
         run: |
           docker push ghcr.io/"$REPO_OWNER"/"$DOCKER_IMAGE_NAME":"$TAG_NAME"
@@ -221,8 +217,35 @@ jobs:
           body: Imagem Docker gerada e publicada no GHCR.
           token: ${{ secrets.GITHUB_TOKEN }}
 
+  iac:
+      runs-on: ubuntu-20.04
+      needs: container-scan
+      steps:
+        - name: 🛠️ Checkout do Código
+          uses: actions/checkout@v3
 
+        - name: run kics Scan
+          uses: checkmarx/kics-github-action@v2.1.4
+          with:
+              path: '.'
+              output_formats: 'sarif'
+              # ignore_on_exit: results
+              fail_on: 'medium,high'
+              output_path: reports/
+          
+        - name: Upload IAC results (Artifact)
+          uses: actions/upload-artifact@master
+          with:
+             name: IAC Report
+             path: ${{github.workspace}}/reports
+             
+        - name: Fazer upload do relatório SARIF (Code scanning)
+          uses: github/codeql-action/upload-sarif@v3
+          with:
+            sarif_file: reports/results.sarif
+            category: dependency-check
 
+             
 
 # ------------------------------------------------------------------------------------------------
 # - name: Salvar tag em arquivo
