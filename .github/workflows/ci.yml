@@ -153,7 +153,7 @@ jobs:
             # --nvdApiKey ${{ secrets.DC_KEY }}                 # chave de api para atualizar o banco de dados de vulnerabilidades NVD (National Vulnerability Database)
             --enableExperimental
             --enableRetired
-            --enableNodeAudit
+            # --enableNodeAudit
 
       - name: Upload DC results (Artifact)
         uses: actions/upload-artifact@master
