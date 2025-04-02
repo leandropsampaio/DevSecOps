@@ -137,7 +137,28 @@ jobs:
 
       - name: Rodar audit do NPM (ou Snyk, OWASP, etc.)
         run: npm audit --audit-level=high
+  
+  dependency-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v3
 
+      - name: Configurar ambiente
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y dependency-check
+
+      - name: Executar Dependency-Check
+        run: |
+          dependency-check --project "Meu Projeto" --scan . --format SARIF --out reports/dependency-check-report.sarif
+
+      - name: Upload do relatório SARIF
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: reports/dependency-check-report.sarif
+          category: dependency-check
+          
   container-scan:
     runs-on: ubuntu-latest
     needs: [init, sast, sca]
