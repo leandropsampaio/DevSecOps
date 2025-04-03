@@ -47,6 +47,7 @@ jobs:
             github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: GitHub Security Dashboard Alerts update
+        if: success() && exists('nuclei.sarif')
         uses: github/codeql-action/upload-sarif@v3
         with:
             sarif_file: nuclei.sarif
