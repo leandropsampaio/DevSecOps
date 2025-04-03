@@ -3,32 +3,76 @@ name: CD - Deploy Staging
 on:
   workflow_dispatch:
     inputs:
-      image_tag:
-        description: 'Tag da imagem Docker publicada no GHCR'
+      TAG_NAME:
+        description: 'Nome da Tag da imagem Docker publicada no GHCR'
         required: true
 
+env:
+  TARGET: 'http://localhost:3000' # Altere para a URL da sua aplicação
+  DOCKER_IMAGE_NAME: devsecops
+  
 jobs:
   deploy:
-    runs-on: [self-hosted, devsecops]
+    runs-on: ubuntu-latest
     environment: staging
     steps:
       - name: Realizar Deploy
         run: echo "Realizando Deploy..."
         
-  dast:
-      runs-on: ubuntu-latest
-      needs: deploy
-      steps:
-        - name: Nuclei - Vulnerability Scan
-          uses: projectdiscovery/nuclei-action@main
-          with:
-              target: ${{secrets.AWS_SERVER_IP}}
-              github-report: true
-              github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Checkout do código (se necessário)
+        uses: actions/checkout@v3
+        
+      - name: Login no GHCR
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Definir REPO_OWNER e TAG_NAME
+        run: |
+          echo "REPO_OWNER=${{ github.repository_owner }}" >> $GITHUB_ENV
+          echo "TAG_NAME=${{ inputs.TAG_NAME }}" >> $GITHUB_ENV
+
+      - name: Baixar e subir container
+        run: |
+          docker pull ghcr.io/"$REPO_OWNER"/"$DOCKER_IMAGE_NAME":"$TAG_NAME"
+          docker run -d \
+            --name minhaaplicacao \
+            -p 3000:3000 \
+            ghcr.io/"$REPO_OWNER"/"$DOCKER_IMAGE_NAME":"$TAG_NAME"
+
+      # DAST - O CERTO É O DEPLOY GERAR UM LINK/IP PARA QUE O DAST EXECUTE EM OUTRO JOB
+      - name: Nuclei - Vulnerability Scan
+        uses: projectdiscovery/nuclei-action@main
+        with:
+            target: ${{ env.TARGET }}
+            github-report: true
+            github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: GitHub Security Dashboard Alerts update
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+            sarif_file: nuclei.sarif
+            
+      - name: Executar ZAP Full Scan
+        uses: zaproxy/action-full-scan@v0.12.0
+        with:
+          target: ${{ env.TARGET }}
+
+  # dast:
+  #     runs-on: ubuntu-latest
+  #     needs: deploy
+  #     steps:
+  #       - name: Nuclei - Vulnerability Scan
+  #         uses: projectdiscovery/nuclei-action@main
+  #         with:
+  #             target: ${{ env.TARGET }}
+  #             github-report: true
+  #             github-token: ${{ secrets.GITHUB_TOKEN }}
   
-    
-        - name: GitHub Security Dashboard Alerts update
-          uses: github/codeql-action/upload-sarif@v3
-          with:
-              sarif_file: nuclei.sarif
+  #       - name: GitHub Security Dashboard Alerts update
+  #         uses: github/codeql-action/upload-sarif@v3
+  #         with:
+  #             sarif_file: nuclei.sarif
               
+  #       - name: Executar ZAP Full Scan
+  #         uses: zaproxy/action-full-scan@v0.12.0
+  #         with:
+  #           target: ${{ env.TARGET }}
