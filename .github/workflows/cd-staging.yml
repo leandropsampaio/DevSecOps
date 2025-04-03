@@ -8,7 +8,7 @@ on:
         required: true
 
 env:
-  TARGET: 'http://localhost:3000' # Altere para a URL da sua aplicação
+  TARGET: 'http://localhost:3000' # Alterar para a URL da aplicação
   DOCKER_IMAGE_NAME: devsecops
   
 jobs:
@@ -40,10 +40,15 @@ jobs:
 
       # DAST - O CERTO É O DEPLOY GERAR UM LINK/IP PARA QUE O DAST EXECUTE EM OUTRO JOB
       # TODAS AS VULNERABILIDADES ENCONTRADAS NO DAST IRÃO PARA AS ISSUES
+      - name: Obter IP do runner
+        id: ip
+        run: |
+          echo "IP=$(hostname -I | awk '{print $1}')" >> $GITHUB_ENV
+          
       - name: Nuclei - Vulnerability Scan
         uses: projectdiscovery/nuclei-action@main
         with:
-            target: ${{ env.TARGET }}
+            target: http://$IP:3000
             github-report: true
             github-token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -56,7 +61,7 @@ jobs:
       - name: Executar ZAP Full Scan
         uses: zaproxy/action-full-scan@v0.12.0
         with:
-          target: ${{ env.TARGET }}
+          target: http://$IP:3000
 
     
   # dast:
