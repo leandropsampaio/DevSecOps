@@ -39,6 +39,7 @@ jobs:
             ghcr.io/"$REPO_OWNER"/"$DOCKER_IMAGE_NAME":"$TAG_NAME"
 
       # DAST - O CERTO É O DEPLOY GERAR UM LINK/IP PARA QUE O DAST EXECUTE EM OUTRO JOB
+      # TODAS AS VULNERABILIDADES ENCONTRADAS NO DAST IRÃO PARA AS ISSUES
       - name: Nuclei - Vulnerability Scan
         uses: projectdiscovery/nuclei-action@main
         with:
@@ -46,11 +47,11 @@ jobs:
             github-report: true
             github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: GitHub Security Dashboard Alerts update
-        continue-on-error: true # PRECISA DEVIDO O NUCLEI NÃO GERAR O ARQUIVO QUANDO NÃO ENCONTRA VULNERABILIDADES
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-            sarif_file: nuclei.sarif
+      # - name: GitHub Security Dashboard Alerts update
+      #   continue-on-error: true # PRECISA DEVIDO O NUCLEI NÃO GERAR O ARQUIVO QUANDO NÃO ENCONTRA VULNERABILIDADES
+      #   uses: github/codeql-action/upload-sarif@v3
+      #   with:
+      #       sarif_file: nuclei.sarif
             
       - name: Executar ZAP Full Scan
         uses: zaproxy/action-full-scan@v0.12.0
