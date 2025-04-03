@@ -46,18 +46,8 @@ jobs:
             github-report: true
             github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Verificar e fazer upload do SARIF
-        run: |
-          if [ -f nuclei.sarif ]; then
-            echo "Enviando SARIF..."
-          else
-            echo "Arquivo não existe"
-            exit 1
-          fi
-        continue-on-error: true
-
       - name: GitHub Security Dashboard Alerts update
-        if: success()
+        continue-on-error: true # PRECISA DEVIDO O NUCLEI NÃO GERAR O ARQUIVO QUANDO NÃO ENCONTRA VULNERABILIDADES
         uses: github/codeql-action/upload-sarif@v3
         with:
             sarif_file: nuclei.sarif
