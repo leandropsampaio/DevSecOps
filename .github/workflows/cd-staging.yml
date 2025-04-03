@@ -38,17 +38,10 @@ jobs:
             -p 3000:3000 \
             ghcr.io/"$REPO_OWNER"/"$DOCKER_IMAGE_NAME":"$TAG_NAME"
 
-      # DAST - O CERTO É O DEPLOY GERAR UM LINK/IP PARA QUE O DAST EXECUTE EM OUTRO JOB
-      # TODAS AS VULNERABILIDADES ENCONTRADAS NO DAST IRÃO PARA AS ISSUES
-      - name: Obter IP do runner
-        id: ip
-        run: |
-          echo "IP=$(hostname -I | awk '{print $1}')" >> $GITHUB_ENV
-
       - name: Nuclei - Vulnerability Scan
         uses: projectdiscovery/nuclei-action@main
         with:
-          target: http://${{ env.IP }}:3000
+          target: localhost:3000
           github-report: true
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -62,7 +55,9 @@ jobs:
       - name: Executar ZAP Full Scan
         uses: zaproxy/action-full-scan@v0.12.0
         with:
-          target: http://${{ env.IP }}:3000
+          target: http://host.docker.internal:3000
+          # passa parâmetros extras ao 'docker run' do ZAP
+          docker-run-params: "--add-host=host.docker.internal:host-gateway"
 
 
     
