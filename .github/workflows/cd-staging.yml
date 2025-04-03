@@ -44,24 +44,26 @@ jobs:
         id: ip
         run: |
           echo "IP=$(hostname -I | awk '{print $1}')" >> $GITHUB_ENV
-          
+
       - name: Nuclei - Vulnerability Scan
         uses: projectdiscovery/nuclei-action@main
         with:
-            target: http://$IP:3000
-            github-report: true
-            github-token: ${{ secrets.GITHUB_TOKEN }}
+          target: http://${{ env.IP }}:3000
+          github-report: true
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
+      # O upload só deve ocorrer se o SARIF existir (opcional)
       # - name: GitHub Security Dashboard Alerts update
-      #   continue-on-error: true # PRECISA DEVIDO O NUCLEI NÃO GERAR O ARQUIVO QUANDO NÃO ENCONTRA VULNERABILIDADES
+      #   continue-on-error: true
       #   uses: github/codeql-action/upload-sarif@v3
       #   with:
-      #       sarif_file: nuclei.sarif
+      #     sarif_file: nuclei.sarif
             
       - name: Executar ZAP Full Scan
         uses: zaproxy/action-full-scan@v0.12.0
         with:
-          target: http://$IP:3000
+          target: http://${{ env.IP }}:3000
+
 
     
   # dast:
