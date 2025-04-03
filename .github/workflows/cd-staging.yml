@@ -52,7 +52,7 @@ jobs:
             echo "Enviando SARIF..."
           else
             echo "Arquivo não existe"
-            exit 0
+            exit 1
           fi
         continue-on-error: true
 
