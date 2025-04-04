@@ -30,7 +30,7 @@ jobs:
           echo "REPO_OWNER=${{ github.repository_owner }}" >> $GITHUB_ENV
           echo "TAG_NAME=${{ inputs.TAG_NAME }}" >> $GITHUB_ENV
 
-      # Conectar no EC2 da AWS via SSH e fazer o deploy da aplicação na máquina
+      # Conecta no EC2 da AWS via SSH e faz o deploy da aplicação na máquina
       - name: Deploy APP
         uses: appleboy/ssh-action@v0.1.10
         with:
