@@ -15,4 +15,10 @@ server.listen(port, () => {
   console.log(`Server running at http://localhost:${port}/`);
   console.log(`Server running at http://localhost:${port}/`);
   console.log(`Server running at http://localhost:${port}/`);
+
+  if(10 == 10){
+    console.log("Is true!");
+  } else{
+    console.log("Is false!")
+  }
 });
