@@ -10,7 +10,7 @@ on:
 jobs:
   deploy_and_dast:
     runs-on: ubuntu-latest
-    environment: staging
+    environment: sandbox
     steps:
       - name: Realizar Deploy
         run: echo "Realizando Deploy..."
