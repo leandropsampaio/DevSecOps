@@ -15,44 +15,49 @@ env:
   DOCKER_IMAGE_NAME: devsecops
   
 jobs:
-  deploy:
+  deploy_and_dast:
     runs-on: ubuntu-latest
-    environment: development
+    environment: staging
     steps:
-      - name: Instalar GitHub CLI
-        run: sudo apt-get install -y gh
-
-      - name: Autenticar no GitHub CLI
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
-
-      - name: Buscar a última Release do repositório
-        id: tag
-        run: |
-          TAG=$(gh release list --limit 1 --repo ${{ github.repository }} --json tagName --jq '.[0].tagName')
-          echo "Última tag encontrada: $TAG"
-          echo "image_tag=$TAG" >> $GITHUB_OUTPUT
-          
       - name: Realizar Deploy
+        run: echo "Realizando Deploy..."
+        
+      - name: Checkout do código (se necessário)
+        uses: actions/checkout@v3
+        
+      - name: Login no GHCR
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Definir REPO_OWNER e TAG_NAME
         run: |
-          echo "Realizando Deploy da imagem: ghcr.io/${{ github.repository_owner }}/${{ env.DOCKER_IMAGE_NAME }}:${{ steps.tag.outputs.image_tag }}"
-    
-      # - name: Login no Azure (AKS)
-      #   uses: azure/login@v1
+          echo "REPO_OWNER=${{ github.repository_owner }}" >> $GITHUB_ENV
+          echo "TAG_NAME=${{ inputs.TAG_NAME }}" >> $GITHUB_ENV
+
+      - name: Baixar e subir container
+        run: |
+          docker pull ghcr.io/"$REPO_OWNER"/"$DOCKER_IMAGE_NAME":"$TAG_NAME"
+          docker run -d \
+            --name minhaaplicacao \
+            -p 3000:3000 \
+            ghcr.io/"$REPO_OWNER"/"$DOCKER_IMAGE_NAME":"$TAG_NAME"
+
+      - name: Nuclei - Vulnerability Scan
+        uses: projectdiscovery/nuclei-action@main
+        with:
+          target: localhost:3000
+          github-report: true
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      # O upload só deve ocorrer se o SARIF existir (opcional)
+      # - name: GitHub Security Dashboard Alerts update
+      #   continue-on-error: true
+      #   uses: github/codeql-action/upload-sarif@v3
       #   with:
-      #     creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-      # - name: Obter contexto do AKS
-      #   uses: azure/aks-set-context@v3
-      #   with:
-      #     resource-group: ${{ secrets.AZURE_RESOURCE_GROUP }}
-      #     cluster-name: ${{ secrets.AZURE_CLUSTER_NAME }}
-
-      # - name: Aplicar imagem no deployment
-      #   run: |
-      #     kubectl set image deployment/my-deployment \
-      #       my-container=ghcr.io/${{ github.repository_owner }}/${{ env.DOCKER_IMAGE_NAME }}:${{ inputs.image_tag }} \
-      #       --namespace=development
-
-      # - name: Verificar rollout
-      #   run: |
-      #     kubectl rollout status deployment/my-deployment --namespace=development
+      #     sarif_file: nuclei.sarif
+            
+      - name: Executar ZAP Full Scan
+        uses: zaproxy/action-full-scan@v0.12.0
+        with:
+          target: http://host.docker.internal:3000
+          # passa parâmetros extras ao 'docker run' do ZAP
+          docker-run-params: "--add-host=host.docker.internal:host-gateway"
